@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Skeleton — Study Abroad Story Scroll</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body class="is-locked">
+
+  <!-- ============ GATE (Act 0) ============ -->
+  <div id="gate" class="gate">
+    <canvas id="gate-canvas" class="gate-canvas"></canvas>
+    <div class="gate-guide">
+      <div class="gate-ring"></div>
+      <h2 class="gate-title">TRACE THE ROUTE</h2>
+      <p class="gate-sub">Hold & draw a full circle to begin</p>
+    </div>
+    <div id="xp-toast" class="xp-toast">
+      <span class="xp-toast-star">✦</span>
+      <span>+100 XP</span>
+    </div>
+  </div>
+
+  <!-- ============ PERSISTENT HUD ============ -->
+  <header id="hud" class="hud">
+    <div class="hud-left">
+      <span class="hud-logo-mark">✦</span>
+      <span class="hud-logo-text">brightpath</span>
+    </div>
+    <div class="hud-center">
+      <div class="hud-ticker-track">
+        <div id="hud-ticker-fill" class="hud-ticker-fill"></div>
+      </div>
+      <span class="hud-ticker-label">Your Journey</span>
+    </div>
+    <div class="hud-right">
+      <div class="hud-xp">
+        <span class="hud-xp-star">✦</span>
+        <span id="hud-xp-count">0 XP</span>
+      </div>
+      <button class="hud-cta" type="button">Book Free Call</button>
+      <button class="hud-menu" type="button" aria-label="Menu">
+        <span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ SCROLL SCENE ============ -->
+  <main id="scene" class="scene">
+
+    <!-- Act 1 — pinned -->
+    <section class="act" id="act-1" data-act="1">
+      <div class="act-pin">
+        <div class="act-bg" id="act-1-bg"></div>
+        <div class="act-content">
+          <h1 class="act-headline">
+            You <span class="script">Believed</span><br />
+            a UK degree was just <span class="script">about the money.</span>
+          </h1>
+
+          <div class="hold-wrap">
+            <button class="hold-btn" id="hold-1" type="button">
+              <svg class="hold-ring" width="104" height="104" viewBox="0 0 104 104">
+                <circle class="hold-ring-bg" cx="52" cy="52" r="46" />
+                <circle class="hold-ring-fill" id="hold-1-fill" cx="52" cy="52" r="46" />
+              </svg>
+              <span class="hold-label">HOLD<br />TO CONTINUE</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Act 2 — The Reality ============ -->
+    <section class="act" id="act-2" data-act="2">
+      <div class="act-pin act-2-pin">
+
+        <!-- Dark atmospheric background for this act -->
+        <div class="act-bg act-2-bg"></div>
+
+        <!-- Thin warning-red top-edge accent line -->
+        <div class="act-2-alert-line"></div>
+
+        <div class="act-content act-2-content">
+
+          <!-- Stage 0 (progress 0–0.15): hook line -->
+          <div class="a2-stage" id="a2-stage-0" aria-hidden="true">
+            <p class="a2-hook">
+              But, here's what<br />
+              <span class="script">nobody tells you.</span>
+            </p>
+          </div>
+
+          <!-- Stage 1 (progress 0.15–0.50): stat callout cards -->
+          <div class="a2-stage" id="a2-stage-1" aria-hidden="true">
+            <p class="a2-stage-label">The numbers they don't put in the brochure</p>
+            <div class="a2-stats">
+
+              <!-- TODO: Replace placeholder values with verified, cited real statistics -->
+              <div class="a2-stat-card">
+                <span class="a2-stat-number"><!-- STAT 1 VALUE e.g. "X%" --></span>
+                <span class="a2-stat-desc">
+                  <!-- STAT 1 LABEL e.g. "UK student visa refusal rate for Indian applicants (2023–24)" -->
+                  UK student visa refusal rate for Indian applicants
+                </span>
+                <span class="a2-stat-source"><!-- STAT 1 SOURCE e.g. "Source: UKVI" --></span>
+              </div>
+
+              <div class="a2-stat-card">
+                <span class="a2-stat-number"><!-- STAT 2 VALUE e.g. "X in Y" --></span>
+                <span class="a2-stat-desc">
+                  <!-- STAT 2 LABEL e.g. "Students who end up in the wrong course due to commission-driven advice" -->
+                  Students who end up in the wrong course or university
+                </span>
+                <span class="a2-stat-source"><!-- STAT 2 SOURCE --></span>
+              </div>
+
+              <div class="a2-stat-card">
+                <span class="a2-stat-number"><!-- STAT 3 VALUE e.g. "₹X Cr" --></span>
+                <span class="a2-stat-desc">
+                  <!-- STAT 3 LABEL e.g. "Lost annually to fraudulent or unregistered study-abroad agents" -->
+                  Lost annually to fraudulent or unregistered agents
+                </span>
+                <span class="a2-stat-source"><!-- STAT 3 SOURCE --></span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Stage 2 (progress 0.50–0.68): universities sell seats -->
+          <div class="a2-stage" id="a2-stage-2" aria-hidden="true">
+            <p class="a2-body-line">
+              <span class="script">Universities</span> sell you a seat.
+            </p>
+          </div>
+
+          <!-- Stage 3 (progress 0.68–0.84): what the visa officer wants -->
+          <div class="a2-stage" id="a2-stage-3" aria-hidden="true">
+            <p class="a2-body-line a2-body-line--accent">
+              But the visa officer wants proof —
+              genuine intent, real funds, a real plan.
+            </p>
+          </div>
+
+          <!-- Stage 4 (progress 0.84–1.00): the disconnect -->
+          <div class="a2-stage" id="a2-stage-4" aria-hidden="true">
+            <p class="a2-body-line a2-body-line--conclusion">
+              Most agents never explain that part.<br />
+              <span class="script">That's the disconnect.</span>
+            </p>
+
+            <div class="hold-wrap">
+              <button class="hold-btn" id="hold-2" type="button">
+                <svg class="hold-ring" width="104" height="104" viewBox="0 0 104 104">
+                  <circle class="hold-ring-bg" cx="52" cy="52" r="46" />
+                  <circle class="hold-ring-fill" id="hold-2-fill" cx="52" cy="52" r="46" />
+                </svg>
+                <span class="hold-label">HOLD<br />TO CONTINUE</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Act 3 — placeholder (build next) ============ -->
+    <section class="act act-placeholder" id="act-3" data-act="3">
+      <div class="act-pin">
+        <div class="act-content">
+          <h2 class="act-headline placeholder-text">Act 3 — build next in Antigravity</h2>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="js/scrollEngine.js"></script>
+  <script src="js/hudController.js"></script>
+  <script src="js/gestureGate.js"></script>
+  <script src="js/holdButton.js"></script>
+  <script src="js/act2.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

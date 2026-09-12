@@ -1,0 +1,562 @@
+/* ============================================================
+   DESIGN TOKENS
+   Palette: Oxford navy + parchment + brass gold (UK/Ireland academic
+   heritage feel) — deliberately not the generic cream+terracotta
+   or black+neon-green combo.
+   ============================================================ */
+:root {
+  --navy-deep: #0f2438;
+  --navy-mid: #16344d;
+  --parchment: #f3ede0;
+  --parchment-dim: #e7ddc7;
+  --brass: #c79a4b;
+  --brass-bright: #e0b563;
+  --ink: #10202c;
+  --font-display: "Fraunces", serif;
+  --font-ui: "Inter", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--navy-deep);
+  color: var(--parchment);
+  font-family: var(--font-ui);
+  overflow-x: hidden;
+}
+
+body.is-locked { overflow: hidden; height: 100vh; }
+
+.script {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--brass-bright);
+}
+
+/* ============================================================
+   GATE (Act 0)
+   ============================================================ */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 40%, var(--navy-mid), var(--navy-deep) 70%);
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.gate.is-open {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.gate-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.gate-guide {
+  position: relative;
+  text-align: center;
+  pointer-events: none;
+}
+
+.gate-ring {
+  width: 220px;
+  height: 220px;
+  margin: 0 auto 24px;
+  border: 1.5px dashed rgba(231, 221, 199, 0.35);
+  border-radius: 50%;
+}
+
+.gate-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-size: 1.4rem;
+  margin: 0;
+  color: var(--parchment);
+}
+
+.gate-sub {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: rgba(243, 237, 224, 0.6);
+}
+
+.xp-toast {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.7);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 20px;
+  border-radius: 999px;
+  background: rgba(199, 154, 75, 0.15);
+  border: 1px solid var(--brass);
+  color: var(--brass-bright);
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.xp-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ============================================================
+   HUD
+   ============================================================ */
+.hud {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 28px;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hud.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hud-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.hud-logo-mark { color: var(--brass-bright); }
+
+.hud-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 200px;
+}
+
+.hud-ticker-track {
+  width: 200px;
+  height: 3px;
+  background: rgba(243, 237, 224, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.hud-ticker-fill {
+  width: 0%;
+  height: 100%;
+  background: var(--brass-bright);
+  transition: width 0.15s linear;
+}
+
+.hud-ticker-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
+  color: rgba(243, 237, 224, 0.5);
+}
+
+.hud-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.hud-xp {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brass-bright);
+}
+
+.hud-cta {
+  background: var(--parchment);
+  color: var(--ink);
+  border: none;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.hud-menu {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 237, 224, 0.3);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.hud-menu span {
+  width: 14px;
+  height: 1.5px;
+  background: var(--parchment);
+}
+
+/* ============================================================
+   SCENE / ACTS
+   Each .act is tall (drives scroll length); inside, .act-pin is
+   fixed to the viewport while its parent is in range, creating
+   the pinned-scrub effect.
+   ============================================================ */
+.scene { position: relative; }
+
+.act {
+  position: relative;
+  height: 220vh; /* scroll distance allotted to this act */
+}
+
+.act-placeholder { height: 100vh; }
+
+.act-pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.act-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--navy-mid), var(--navy-deep));
+}
+
+.act-content {
+  position: relative;
+  z-index: 2;
+  max-width: 720px;
+  text-align: center;
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.act-content.is-in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.act-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+  line-height: 1.25;
+  margin: 0 0 48px;
+}
+
+.placeholder-text { color: rgba(243, 237, 224, 0.35); }
+
+/* Hold-to-continue button */
+.hold-wrap { display: flex; justify-content: center; }
+
+.hold-btn {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hold-ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+
+.hold-ring-bg,
+.hold-ring-fill {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.hold-ring-bg { stroke: rgba(243, 237, 224, 0.2); }
+
+.hold-ring-fill {
+  stroke: var(--brass-bright);
+  stroke-dasharray: 289;
+  stroke-dashoffset: 289;
+  transition: stroke-dashoffset 0.05s linear;
+}
+
+.hold-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--parchment);
+}
+
+@media (max-width: 640px) {
+  .hud { padding: 14px 16px; }
+  .hud-center { display: none; }
+}
+
+/* ============================================================
+   ACT 2 — "The Reality"
+   Palette shift: near-black background + thin red warning accent.
+   Brass/parchment text is preserved to keep brand continuity.
+   ============================================================ */
+
+/* Act 2 design tokens (local only — do not pollute :root) */
+.act-2-bg {
+  background: linear-gradient(
+    160deg,
+    #0a0f14 0%,
+    #0d1720 55%,
+    #110a0a 100%   /* very dark maroon tint at the bottom edge */
+  );
+}
+
+/* Hairline warning-red glow across the top of the pinned panel */
+.act-2-alert-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(200, 40, 40, 0.7) 30%,
+    rgba(220, 60, 60, 0.9) 50%,
+    rgba(200, 40, 40, 0.7) 70%,
+    transparent 100%
+  );
+  z-index: 3;
+  /* subtle pulse so it reads as "alert" without being garish */
+  animation: a2-pulse 3s ease-in-out infinite;
+}
+
+@keyframes a2-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%       { opacity: 1; }
+}
+
+/* Act 2 content area: wider than generic .act-content and positioned
+   relatively so the absolute-positioned stages stack inside it. */
+.act-2-content {
+  max-width: 860px;
+  width: 100%;
+  position: relative;
+  height: min(70vh, 600px);
+}
+
+/* ---- Stage crossfade system ---- */
+/* Each stage is absolutely positioned within the content area so they
+   can fade independently. The JS sets opacity + pointer-events. */
+.a2-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.a2-stage.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  /* override aria-hidden so screen readers announce the visible stage */
+}
+
+
+
+/* ---- Stage 0: hook headline ---- */
+.a2-hook {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2rem, 5.5vw, 3.6rem);
+  line-height: 1.22;
+  text-align: center;
+  margin: 0;
+  color: var(--parchment);
+  /* subtle letterpress shadow for depth on the very dark bg */
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.6);
+}
+
+/* ---- Stage 1: stat cards ---- */
+.a2-stage-label {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(200, 40, 40, 0.85);
+  margin: 0 0 20px;
+}
+
+.a2-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+/* Glass-card treatment — "torn paper / glass" feel using the project's
+   existing parchment/brass language against the very dark background */
+.a2-stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 24px 16px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(199, 154, 75, 0.22);
+  border-top: 2px solid rgba(200, 40, 40, 0.55);
+  border-radius: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-align: center;
+  /* subtle inner glow */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 8px 32px rgba(0, 0, 0, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.a2-stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 14px 40px rgba(0, 0, 0, 0.55);
+}
+
+.a2-stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 600;
+  color: var(--brass-bright);
+  line-height: 1;
+  min-height: 1.2em; /* reserves space even when the TODO is empty */
+}
+
+/* Placeholder shimmer so empty TODO values are obviously placeholders */
+.a2-stat-number:empty::before {
+  content: "—";
+  color: rgba(224, 181, 99, 0.35);
+}
+
+.a2-stat-desc {
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(243, 237, 224, 0.75);
+}
+
+.a2-stat-source {
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  color: rgba(243, 237, 224, 0.35);
+  margin-top: 2px;
+}
+
+.a2-stat-source:empty::before {
+  content: "Source: TODO";
+  color: rgba(243, 237, 224, 0.2);
+}
+
+/* ---- Stages 2, 3, 4: body lines ---- */
+.a2-body-line {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3.8vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  margin: 0 0 40px;
+  color: var(--parchment);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Stage 3 accent: the "visa officer wants proof" line gets a warm amber tint */
+.a2-body-line--accent {
+  color: var(--parchment-dim);
+  font-style: italic;
+  font-weight: 500;
+  position: relative;
+}
+
+.a2-body-line--accent::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -16px;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  background: rgba(200, 40, 40, 0.65);
+  border-radius: 1px;
+}
+
+/* Stage 4 conclusion */
+.a2-body-line--conclusion {
+  color: var(--parchment);
+}
+
+/* ---- Responsive: stack cards below 640 px ---- */
+@media (max-width: 640px) {
+  .a2-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .act-2-content {
+    /* taller on mobile because the cards stack */
+    height: min(85vh, 680px);
+  }
+
+  .a2-hook {
+    font-size: clamp(1.7rem, 7vw, 2.8rem);
+  }
+
+  .a2-body-line {
+    font-size: clamp(1.3rem, 5.5vw, 2rem);
+  }
+
+  /* On very small screens the stat cards need a touch more breathing room */
+  .a2-stat-card {
+    padding: 20px 14px 16px;
+  }
+}
+
