@@ -560,3 +560,495 @@ body.is-locked { overflow: hidden; height: 100vh; }
   }
 }
 
+/* ============================================================
+   ACT 3 — "Introducing [BRAND NAME]"
+   Palette returns to warm credibility: navy-mid base, soft brass
+   radial glow, parchment text. Signals "here's the solution" after
+   Act 2's dark gut-punch without being a jarring reset.
+   ============================================================ */
+
+/* Background: navy-mid as base, large brass radial glow centred behind text */
+.act-3-bg {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 50% 45%,
+      rgba(199, 154, 75, 0.12) 0%,
+      transparent 70%
+    ),
+    linear-gradient(175deg, var(--navy-mid) 0%, var(--navy-deep) 100%);
+}
+
+/* Content container — same relative + height pattern as Act 2 */
+.act-3-content {
+  position: relative;
+  max-width: 780px;
+  width: 100%;
+  height: min(72vh, 620px);
+}
+
+/* ---- Stage crossfade (same mechanism as .a2-stage) ---- */
+.a3-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+}
+
+.a3-stage.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ---- Stage 0 & 1 shared: "Introducing" script word ---- */
+.a3-introducing {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.1rem, 2.8vw, 1.6rem);
+  color: var(--brass);
+  letter-spacing: 0.04em;
+  display: block;
+  text-align: center;
+}
+
+/* In Stage 1 it sits above the wordmark with a little breathing room */
+.a3-introducing--above {
+  margin-bottom: 14px;
+}
+
+/* ---- Stage 1: brand wordmark ---- */
+.a3-brand {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+  line-height: 1.1;
+  text-align: center;
+  margin: 0;
+  letter-spacing: 0.05em; /* "RKAZN" is a short all-caps acronym — breathing room reads it as a wordmark */
+  /* Brass-gold gradient fills the letterforms */
+  background: linear-gradient(
+    135deg,
+    var(--brass)       0%,
+    var(--brass-bright) 45%,
+    #f5d08a            70%,
+    var(--brass)       100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  /* Fallback for browsers without background-clip: text */
+  color: var(--brass-bright);
+  /* Subtle glow so the wordmark reads as premium on dark navy */
+  filter: drop-shadow(0 0 18px rgba(199, 154, 75, 0.28));
+}
+
+/* ---- Stage 2: capability lines ---- */
+.a3-caps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  text-align: left;
+}
+
+.a3-cap-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 10px;
+  /* subtle left brass rule to reinforce the brand accent */
+  padding-left: 18px;
+  border-left: 2px solid rgba(199, 154, 75, 0.45);
+}
+
+/* "Real" — italic Fraunces, same treatment as Act 1's "Believed" */
+.a3-cap-real {
+  font-size: clamp(1.15rem, 2.8vw, 1.5rem);
+  /* .script class in styles.css already handles font/italic/color */
+  flex-shrink: 0;
+}
+
+/* Middle phrase — bold, slightly larger, parchment */
+.a3-cap-main {
+  font-family: var(--font-ui);
+  font-size: clamp(1rem, 2.4vw, 1.25rem);
+  font-weight: 700;
+  color: var(--parchment);
+  letter-spacing: -0.01em;
+}
+
+/* Bracketed aside — smaller, muted parchment-dim */
+.a3-cap-aside {
+  font-family: var(--font-ui);
+  font-size: clamp(0.75rem, 1.6vw, 0.88rem);
+  font-weight: 400;
+  color: rgba(243, 237, 224, 0.5);
+  font-style: italic;
+  /* wrap and indent under the main phrase on narrow screens */
+  width: 100%;
+  padding-left: calc(clamp(1.15rem, 2.8vw, 1.5rem) + 10px);
+  margin-top: -14px; /* tuck it visually under the main phrase */
+}
+
+/* ---- Stage 3: closing statement ---- */
+.a3-closing {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4.2vw, 3rem);
+  line-height: 1.28;
+  text-align: center;
+  margin: 0 0 44px;
+  color: var(--parchment);
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.35);
+}
+
+/* "GET INTO" — rendered as a small-caps label so it reads as a
+   title/imperative above the larger descriptive phrase */
+.a3-closing-label {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-size: clamp(0.65rem, 1.4vw, 0.8rem);
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--brass-bright);
+  margin-bottom: 6px;
+  /* knock out the display-font sizing from .a3-closing */
+  font-style: normal;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .act-3-content {
+    height: min(86vh, 680px);
+  }
+
+  .a3-caps {
+    gap: 18px;
+  }
+
+  .a3-cap-line {
+    padding-left: 14px;
+  }
+
+  /* On very small screens the aside wraps naturally — remove the
+     negative margin that works at wider widths */
+  .a3-cap-aside {
+    margin-top: -8px;
+    padding-left: 0;
+  }
+
+  .a3-closing {
+    font-size: clamp(1.35rem, 6vw, 2.2rem);
+  }
+}
+
+/* ============================================================
+   ACT 4 — "Your Next Step" (final act)
+   Palette: --navy-deep base, brass radial glow that intensifies
+   with scroll progress (driven via --a4-glow-intensity CSS var
+   set by act4.js on each scene:progress frame).
+   ============================================================ */
+
+/* --a4-glow-intensity is a 0..1 value written by act4.js each frame.
+   Default 0.18 so the glow is faintly visible before any scroll. */
+#act-4 { --a4-glow-intensity: 0.18; }
+
+/*
+   TODO: replace radial glow with UK/Ireland skyline illustration or PNG sequence.
+   When the real asset arrives, replace the radial-gradient below with an <img>
+   or a CSS background-image pointing at the asset. Keep .act-4-bg as the layer.
+*/
+.act-4-bg {
+  background:
+    radial-gradient(
+      ellipse 90% 70% at 50% 60%,
+      /* opacity of the glow scales with --a4-glow-intensity via calc() */
+      rgba(199, 154, 75, calc(var(--a4-glow-intensity) * 0.55)) 0%,
+      rgba(199, 154, 75, calc(var(--a4-glow-intensity) * 0.12)) 45%,
+      transparent 75%
+    ),
+    var(--navy-deep);
+  /* smooth colour transition as JS updates the custom property */
+  transition: background 0.4s ease;
+}
+
+/* Content container */
+.act-4-content {
+  position: relative;
+  max-width: 740px;
+  width: 100%;
+  height: min(68vh, 580px);
+  /* extra bottom padding so text never hides behind the capture bar */
+  padding-bottom: 80px;
+}
+
+/* ---- Stage crossfade (identical mechanism to .a2-stage / .a3-stage) ---- */
+.a4-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+}
+
+.a4-stage.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ---- Stage 0: opening headline ---- */
+.a4-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 4.8vw, 3.4rem);
+  line-height: 1.25;
+  text-align: center;
+  margin: 0;
+  color: var(--parchment);
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55);
+}
+
+/* ---- Stage 1: staggered word reveal ---- */
+.a4-cta-label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.35em;
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: clamp(1.5rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--brass-bright);
+  text-shadow:
+    0 0 40px rgba(199, 154, 75, 0.5),
+    0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Each word starts invisible and translates up; when .a4-stage becomes
+   .is-active the opacity + transform animate in using staggered delays. */
+.a4-cta-word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+
+/* nth-child delays — one word per step */
+.a4-cta-word:nth-child(1) { transition-delay: 0.00s; }
+.a4-cta-word:nth-child(2) { transition-delay: 0.10s; }
+.a4-cta-word:nth-child(3) { transition-delay: 0.20s; }
+.a4-cta-word:nth-child(4) { transition-delay: 0.30s; }
+.a4-cta-word:nth-child(5) { transition-delay: 0.42s; }
+
+/* When the parent stage is active, fire all words */
+#a4-stage-1.is-active .a4-cta-word {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---- Stage 2: closing subline ---- */
+.a4-subline {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.8vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+  color: rgba(243, 237, 224, 0.88);
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- HUD "Book Free Call" pulse (activated by act4.js on stage 2) ---- */
+@keyframes hud-cta-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(224, 181, 99, 0.65); }
+  60%  { box-shadow: 0 0 0 10px rgba(224, 181, 99, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(224, 181, 99, 0); }
+}
+
+.hud-cta.is-pulsing {
+  animation: hud-cta-pulse 1.8s ease-out infinite;
+}
+
+/* ============================================================
+   FLOATING CAPTURE BAR
+   Fixed pill at the bottom-center of the viewport. Hidden (opacity 0,
+   translateY down) until act4.js adds .is-visible. Lives outside
+   .act-pin so it is not part of the sticky scroll context.
+   ============================================================ */
+.capture-bar {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 60;
+  /* pill shape */
+  background: rgba(15, 36, 56, 0.88);
+  border: 1px solid rgba(199, 154, 75, 0.45);
+  border-radius: 999px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    0 4px 32px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 0 24px rgba(199, 154, 75, 0.12);
+  padding: 10px 10px 10px 22px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  /* hidden until act4.js reveals it */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  /* max width so it doesn't stretch too wide on large screens */
+  max-width: min(560px, calc(100vw - 32px));
+  width: 100%;
+}
+
+.capture-bar.is-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+/* Visually hidden label — accessible but not painted */
+.capture-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.capture-input {
+  flex: 1;
+  min-width: 0; /* allow shrinking in flex context */
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-ui);
+  font-size: 0.92rem;
+  color: var(--parchment);
+  padding: 6px 0;
+}
+
+.capture-input::placeholder {
+  color: rgba(243, 237, 224, 0.38);
+}
+
+/* Thin divider between input and button */
+.capture-input:focus {
+  border-bottom: 1px solid rgba(199, 154, 75, 0.6);
+}
+
+.capture-submit {
+  flex-shrink: 0;
+  background: var(--brass-bright);
+  color: var(--ink);
+  border: none;
+  border-radius: 999px;
+  padding: 11px 22px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.capture-submit:hover {
+  background: #f0c46e;
+  transform: scale(1.03);
+}
+
+.capture-submit:active {
+  transform: scale(0.98);
+}
+
+/* Loading state — button is disabled while submitLead() is in flight */
+.capture-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Validation error state on the bar */
+.capture-bar.has-error .capture-input {
+  border-bottom: 1px solid rgba(200, 40, 40, 0.75);
+  color: #f5a0a0;
+}
+
+/* Confirmation message */
+.capture-confirm {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--parchment);
+  padding: 6px 12px 6px 0;
+}
+
+.capture-confirm-icon {
+  color: var(--brass-bright);
+  font-size: 1.1rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .act-4-content {
+    height: min(80vh, 620px);
+    padding-bottom: 100px;
+  }
+
+  .a4-headline {
+    font-size: clamp(1.5rem, 6.5vw, 2.4rem);
+  }
+
+  .a4-cta-label {
+    font-size: clamp(1.2rem, 6vw, 2rem);
+    letter-spacing: 0.07em;
+  }
+
+  /* Stack the capture bar vertically on narrow screens */
+  .capture-bar {
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 18px;
+    padding: 16px 16px;
+    gap: 12px;
+    bottom: 16px;
+  }
+
+  .capture-input {
+    font-size: 1rem;
+    padding: 8px 0;
+  }
+
+  .capture-submit {
+    width: 100%;
+    padding: 14px 22px;
+    font-size: 0.95rem;
+  }
+}

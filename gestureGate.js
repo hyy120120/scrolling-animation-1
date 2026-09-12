@@ -4,6 +4,17 @@
  * whether the user has traced a roughly closed loop (a "circle") around
  * the guide ring. On success: fires an XP toast, unlocks page scroll,
  * and reveals the HUD.
+ *
+ * Fixed vs. the original skeleton:
+ * 1. resizeCanvas() now uses setTransform() instead of scale(), so the
+ *    devicePixelRatio correction no longer compounds on repeated resizes.
+ * 2. Uses Pointer Events (not separate mouse/touch handlers) with
+ *    setPointerCapture(), so a stroke keeps being tracked even if the
+ *    cursor briefly leaves the canvas bounds — no more "stuck" state
+ *    where a missed mouseup silently blocks the next attempt.
+ * 3. Loop-detection distance threshold now scales with how big the
+ *    drawn circle actually was, instead of a fixed 120px, so both
+ *    small and large gestures are recognized fairly.
  */
 (function () {
   "use strict";
@@ -18,11 +29,16 @@
 
   /** Resize the canvas to match the viewport (keeps drawing crisp). */
   function resizeCanvas() {
-    canvas.width = window.innerWidth * devicePixelRatio;
-    canvas.height = window.innerHeight * devicePixelRatio;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = window.innerWidth * dpr;
+    canvas.height = window.innerHeight * dpr;
     canvas.style.width = `${window.innerWidth}px`;
     canvas.style.height = `${window.innerHeight}px`;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+
+    // setTransform REPLACES the transform matrix instead of stacking on
+    // top of whatever scale was applied last time — this is the fix for
+    // strokes drifting/disappearing after a resize.
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "rgba(224, 181, 99, 0.9)"; // brass-bright
@@ -34,31 +50,31 @@
   let isDrawing = false;
   let points = [];
 
-  function pointerPos(evt) {
-    const touch = evt.touches && evt.touches[0];
-    const x = touch ? touch.clientX : evt.clientX;
-    const y = touch ? touch.clientY : evt.clientY;
-    return { x, y };
-  }
-
   function startDraw(evt) {
     isDrawing = true;
-    points = [pointerPos(evt)];
+    points = [{ x: evt.clientX, y: evt.clientY }];
+    canvas.setPointerCapture(evt.pointerId);
     ctx.beginPath();
-    ctx.moveTo(points[0].x, points[0].y);
+    ctx.moveTo(evt.clientX, evt.clientY);
   }
 
   function moveDraw(evt) {
     if (!isDrawing) return;
-    const p = pointerPos(evt);
-    points.push(p);
-    ctx.lineTo(p.x, p.y);
+    points.push({ x: evt.clientX, y: evt.clientY });
+    ctx.lineTo(evt.clientX, evt.clientY);
     ctx.stroke();
   }
 
-  function endDraw() {
+  function endDraw(evt) {
     if (!isDrawing) return;
     isDrawing = false;
+    if (evt && evt.pointerId !== undefined) {
+      try {
+        canvas.releasePointerCapture(evt.pointerId);
+      } catch (e) {
+        // Pointer may already be released — safe to ignore.
+      }
+    }
     if (isClosedLoop(points)) {
       unlockGate();
     } else {
@@ -69,16 +85,23 @@
 
   /**
    * Heuristic loop detection: the path must (a) travel a minimum total
-   * distance, (b) sweep close to a full 360° around its centroid, and
-   * (c) end near where it started.
+   * distance, (b) sweep close to a full 360 degrees around its centroid,
+   * and (c) end reasonably close to where it started, relative to the
+   * overall size of the drawn shape (so both small and large circles work).
    * @param {{x:number, y:number}[]} pathPoints
    * @returns {boolean}
    */
   function isClosedLoop(pathPoints) {
-    if (pathPoints.length < 20) return false;
+    if (pathPoints.length < 15) return false;
 
     const cx = pathPoints.reduce((sum, p) => sum + p.x, 0) / pathPoints.length;
     const cy = pathPoints.reduce((sum, p) => sum + p.y, 0) / pathPoints.length;
+
+    // Average radius from the centroid — used to make the "ends near
+    // start" check proportional to the size of the gesture.
+    const avgRadius =
+      pathPoints.reduce((sum, p) => sum + Math.hypot(p.x - cx, p.y - cy), 0) /
+      pathPoints.length;
 
     let totalAngle = 0;
     let prevAngle = Math.atan2(pathPoints[0].y - cy, pathPoints[0].x - cx);
@@ -86,7 +109,6 @@
     for (let i = 1; i < pathPoints.length; i++) {
       const angle = Math.atan2(pathPoints[i].y - cy, pathPoints[i].x - cx);
       let delta = angle - prevAngle;
-      // Normalize to [-PI, PI] to avoid jump artifacts at the wrap-around.
       if (delta > Math.PI) delta -= 2 * Math.PI;
       if (delta < -Math.PI) delta += 2 * Math.PI;
       totalAngle += delta;
@@ -97,8 +119,10 @@
     const end = pathPoints[pathPoints.length - 1];
     const closeDistance = Math.hypot(end.x - start.x, end.y - start.y);
 
-    const sweptFullCircle = Math.abs(totalAngle) > Math.PI * 1.5; // ~270°+
-    const endsNearStart = closeDistance < 120;
+    const sweptFullCircle = Math.abs(totalAngle) > Math.PI * 1.4; // ~250 degrees+
+    // Ends within 60% of the shape's own average radius (min 80px so
+    // tiny accidental gestures don't trivially "close").
+    const endsNearStart = closeDistance < Math.max(avgRadius * 0.6, 80);
 
     return sweptFullCircle && endsNearStart;
   }
@@ -115,10 +139,8 @@
     }, 500);
   }
 
-  canvas.addEventListener("mousedown", startDraw);
-  canvas.addEventListener("mousemove", moveDraw);
-  canvas.addEventListener("mouseup", endDraw);
-  canvas.addEventListener("touchstart", startDraw, { passive: true });
-  canvas.addEventListener("touchmove", moveDraw, { passive: true });
-  canvas.addEventListener("touchend", endDraw);
+  canvas.addEventListener("pointerdown", startDraw);
+  canvas.addEventListener("pointermove", moveDraw);
+  canvas.addEventListener("pointerup", endDraw);
+  canvas.addEventListener("pointercancel", endDraw);
 })();

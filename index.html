@@ -3,7 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Skeleton — Study Abroad Story Scroll</title>
+<title>RKAZN — UK &amp; Ireland Study Abroad Visa Counselling for Indian Students</title>
+<meta name="description" content="RKAZN helps Indian students navigate UK and Ireland student visa applications with honest, case-by-case guidance — no commissions, no scripts, just real support." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,600;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -29,7 +30,7 @@
   <header id="hud" class="hud">
     <div class="hud-left">
       <span class="hud-logo-mark">✦</span>
-      <span class="hud-logo-text">brightpath</span>
+      <span class="hud-logo-text">RKAZN</span>
     </div>
     <div class="hud-center">
       <div class="hud-ticker-track">
@@ -168,14 +169,145 @@
       </div>
     </section>
 
-    <!-- ============ Act 3 — placeholder (build next) ============ -->
-    <section class="act act-placeholder" id="act-3" data-act="3">
-      <div class="act-pin">
-        <div class="act-content">
-          <h2 class="act-headline placeholder-text">Act 3 — build next in Antigravity</h2>
+    <!-- ============ Act 3 — Introducing RKAZN ============ -->
+    <section class="act" id="act-3" data-act="3">
+      <div class="act-pin act-3-pin">
+
+        <!-- Warm parchment/navy background with a soft brass radial glow -->
+        <div class="act-bg act-3-bg"></div>
+
+        <div class="act-content act-3-content">
+
+          <!-- Stage 0 (progress 0.00–0.20): introducing word alone -->
+          <div class="a3-stage" id="a3-stage-0" aria-hidden="true">
+            <span class="a3-introducing">Introducing</span>
+          </div>
+
+          <!-- Stage 1 (progress 0.20–0.44): brand wordmark -->
+          <div class="a3-stage" id="a3-stage-1" aria-hidden="true">
+            <span class="a3-introducing a3-introducing--above">Introducing</span>
+            <!-- TODO: Update letter-spacing or font-size if the final wordmark treatment differs -->
+            <h2 class="a3-brand">RKAZN</h2>
+          </div>
+
+          <!-- Stage 2 (progress 0.44–0.78): three capability lines -->
+          <div class="a3-stage" id="a3-stage-2" aria-hidden="true">
+            <ul class="a3-caps">
+              <li class="a3-cap-line">
+                <span class="a3-cap-real script">Real</span>
+                <span class="a3-cap-main">case-by-case guidance</span>
+                <span class="a3-cap-aside">not a call-centre script</span>
+              </li>
+              <li class="a3-cap-line">
+                <span class="a3-cap-real script">Real</span>
+                <span class="a3-cap-main">documentation support</span>
+                <span class="a3-cap-aside">SOP, financials, CAS — done right the first time</span>
+              </li>
+              <li class="a3-cap-line">
+                <span class="a3-cap-real script">Real</span>
+                <span class="a3-cap-main">visa-interview prep</span>
+                <span class="a3-cap-aside">matching what UK &amp; Ireland officers actually check</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Stage 3 (progress 0.78–1.00): closing statement + hold-3 -->
+          <div class="a3-stage" id="a3-stage-3" aria-hidden="true">
+            <p class="a3-closing">
+              <span class="a3-closing-label">GET INTO</span><br />
+              the university &amp; country<br />
+              <span class="script">that's actually right for you.</span>
+            </p>
+
+            <div class="hold-wrap">
+              <button class="hold-btn" id="hold-3" type="button">
+                <svg class="hold-ring" width="104" height="104" viewBox="0 0 104 104">
+                  <circle class="hold-ring-bg" cx="52" cy="52" r="46" />
+                  <circle class="hold-ring-fill" id="hold-3-fill" cx="52" cy="52" r="46" />
+                </svg>
+                <span class="hold-label">HOLD<br />TO CONTINUE</span>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
+
+    <!-- ============ Act 4 — Your Next Step (final act) ============ -->
+    <section class="act" id="act-4" data-act="4">
+      <div class="act-pin act-4-pin">
+
+        <!--
+          TODO: replace radial glow with UK/Ireland skyline illustration or PNG sequence.
+          The .act-4-bg element below is a pure CSS placeholder for that asset.
+        -->
+        <div class="act-bg act-4-bg" id="act-4-bg"></div>
+
+        <div class="act-content act-4-content">
+
+          <!-- Stage 0 (progress 0.00–0.30): opening headline -->
+          <div class="a4-stage" id="a4-stage-0" aria-hidden="true">
+            <p class="a4-headline">
+              You don't need luck.<br />
+              You need the <span class="script">right guidance.</span>
+            </p>
+          </div>
+
+          <!-- Stage 1 (progress 0.30–0.65): staggered CTA text reveal -->
+          <div class="a4-stage" id="a4-stage-1" aria-hidden="true">
+            <p class="a4-cta-label" aria-label="Book your free counselling call">
+              <!-- Each word is wrapped in a span for staggered fade-in via CSS transition-delay.
+                   The .is-active class on the parent stage triggers all of them. -->
+              <span class="a4-cta-word">BOOK</span>
+              <span class="a4-cta-word">YOUR</span>
+              <span class="a4-cta-word">FREE</span>
+              <span class="a4-cta-word">COUNSELLING</span>
+              <span class="a4-cta-word">CALL</span>
+            </p>
+          </div>
+
+          <!-- Stage 2 (progress 0.65–1.00): closing + HUD pulse trigger -->
+          <div class="a4-stage" id="a4-stage-2" aria-hidden="true">
+            <p class="a4-subline">
+              A 30-minute call. No commission. No pressure.
+              <br />
+              <span class="script">Just honest advice about what your path actually looks like.</span>
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Floating email capture form (Act 4) ============
+         This bar sits fixed at the bottom of the viewport. It is hidden
+         until Act 4 stage 2 is activated, then fades in and stays visible.
+         The form is intentionally outside .act-pin so it doesn't participate
+         in the sticky-scroll pinning — it overlays all content from below.
+    ============================================================ -->
+    <div class="capture-bar" id="capture-bar" role="complementary" aria-label="Book a free counselling call">
+      <!-- Form state -->
+      <form class="capture-form" id="capture-form" novalidate>
+        <label class="capture-label" for="capture-email">Your email</label>
+        <input
+          class="capture-input"
+          id="capture-email"
+          type="email"
+          name="email"
+          placeholder="Enter your email"
+          autocomplete="email"
+          required
+          aria-required="true"
+        />
+        <button class="capture-submit" type="submit">Get Free Counselling</button>
+      </form>
+      <!-- Confirmation state (hidden until submit succeeds) -->
+      <div class="capture-confirm" id="capture-confirm" hidden aria-live="polite">
+        <span class="capture-confirm-icon">✦</span>
+        <span>Thanks — we'll reach out within 24 hours.</span>
+      </div>
+    </div>
 
   </main>
 
@@ -184,6 +316,8 @@
   <script src="js/gestureGate.js"></script>
   <script src="js/holdButton.js"></script>
   <script src="js/act2.js"></script>
+  <script src="js/act3.js"></script>
+  <script src="js/act4.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>
