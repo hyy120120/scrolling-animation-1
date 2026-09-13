@@ -1052,3 +1052,224 @@ body.is-locked { overflow: hidden; height: 100vh; }
     font-size: 0.95rem;
   }
 }
+
+/* ============================================================
+   JUICE PASS — Task 1: Mute button
+   Ghost-circle button, matches .hud-menu sizing.
+   ============================================================ */
+.hud-mute {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(243, 237, 224, 0.3);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  /* Remove default button padding that would skew the circle. */
+  padding: 0;
+  transition: border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.hud-mute:hover {
+  border-color: rgba(224, 181, 99, 0.65);
+  opacity: 0.85;
+}
+
+/* ============================================================
+   JUICE PASS — Task 2: Hold-button feedback
+   impact punch · shake · particle sparks · screen flash
+   ============================================================ */
+
+/* ── Scale-punch on completion ── */
+@keyframes hold-impact {
+  0%   { transform: scale(1); }
+  35%  { transform: scale(1.16); }
+  65%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.hold-btn--impact {
+  animation: hold-impact 280ms cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* ── Shake on early release ── */
+@keyframes hold-shake {
+  0%   { transform: translateX(0); }
+  18%  { transform: translateX(-6px); }
+  36%  { transform: translateX(5px); }
+  54%  { transform: translateX(-4px); }
+  72%  { transform: translateX(3px); }
+  88%  { transform: translateX(-2px); }
+  100% { transform: translateX(0); }
+}
+
+.hold-btn--shake {
+  animation: hold-shake 300ms ease-out forwards;
+}
+
+/* ── Radial burst particles ── */
+@keyframes spark-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate(var(--tx), var(--ty)) scale(0);
+    opacity: 0;
+  }
+}
+
+.hold-spark {
+  position: fixed;
+  border-radius: 50%;
+  background: var(--brass-bright);
+  pointer-events: none;
+  z-index: 9999;
+  /* Slight glow so they read against any background. */
+  box-shadow: 0 0 4px rgba(224, 181, 99, 0.7);
+  animation: spark-fly 580ms cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+
+/* ── Full-screen white flash ── */
+.hold-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 150ms ease-out;
+}
+
+.hold-flash--fade {
+  opacity: 0;
+}
+
+/* ============================================================
+   JUICE PASS — Task 3: XP score popups + star idle pulse
+   ============================================================ */
+
+/* ── Floating "+N XP" label ── */
+@keyframes xp-float {
+  0%   { transform: translateX(-50%) translateY(0);     opacity: 1; }
+  100% { transform: translateX(-50%) translateY(-44px); opacity: 0; }
+}
+
+.xp-floater {
+  position: fixed;
+  /* left/top set dynamically by JS; translateX(-50%) centres on that point. */
+  transform: translateX(-50%) translateY(0);
+  pointer-events: none;
+  z-index: 200;
+  font-family: var(--font-ui);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--brass-bright);
+  text-shadow: 0 0 8px rgba(224, 181, 99, 0.6);
+  opacity: 0;
+}
+
+.xp-floater--fly {
+  animation: xp-float 800ms ease-out forwards;
+}
+
+/* ── XP badge scale-punch ── */
+@keyframes hud-xp-punch {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.22); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+.hud-xp--punch {
+  animation: hud-xp-punch 340ms cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* ── Star icon idle pulse ── */
+@keyframes star-pulse {
+  0%, 100% { opacity: 1;    transform: scale(1); }
+  50%       { opacity: 0.65; transform: scale(1.18); }
+}
+
+.hud-xp-star {
+  display: inline-block;
+  animation: star-pulse 2.4s ease-in-out infinite;
+  /* Small transform-origin tweak so the star pulses from its centre. */
+  transform-origin: center;
+}
+
+/* ============================================================
+   JUICE PASS — Task 4: Level-map dot trail
+   Replaces the linear hud-ticker-track bar inside .hud-center.
+   5 dots (Gate → Act 1 → Act 2 → Act 3 → Act 4) + 4 connecting lines.
+   ============================================================ */
+.hud-trail {
+  display: flex;
+  align-items: center;
+  width: 200px; /* matches old ticker width so layout stays identical */
+  gap: 0;
+}
+
+/* Thin connecting line between each pair of dots. */
+.hud-trail-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(224, 181, 99, 0.2);
+  transition: background 0.35s ease;
+}
+
+/* Illuminate the connector once the left-side dot is reached. */
+.hud-dot--reached + .hud-trail-line,
+.hud-trail-line:has(+ .hud-dot--reached) {
+  background: rgba(199, 154, 75, 0.55);
+}
+
+/* Base dot: dim outline circle */
+.hud-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(224, 181, 99, 0.25);
+  background: transparent;
+  flex-shrink: 0;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Reached: solid brass fill */
+.hud-dot--reached {
+  background: var(--brass);
+  border-color: var(--brass-bright);
+}
+
+/* Active: pulsing glow ring */
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(224, 181, 99, 0.35); }
+  50%       { box-shadow: 0 0 0 5px rgba(224, 181, 99, 0.0); }
+}
+
+.hud-dot--active {
+  background: var(--brass-bright);
+  border-color: var(--brass-bright);
+  animation: dot-pulse 1.6s ease-in-out infinite;
+}
+
+/* Pop animation: fires once on first-reach */
+@keyframes dot-pop {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.65); }
+  75%  { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+.hud-dot--pop {
+  animation: dot-pop 420ms cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+

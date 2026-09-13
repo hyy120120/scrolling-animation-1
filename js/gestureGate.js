@@ -128,6 +128,9 @@
   }
 
   function unlockGate() {
+    // ── Audio ─────────────────────────────────────────────────────────────
+    if (window.AudioFX) AudioFX.play("gate-unlock");
+
     if (xpToast) xpToast.classList.add("is-visible");
     if (window.HudXP) window.HudXP.add(100);
 
@@ -136,6 +139,10 @@
       document.body.classList.remove("is-locked");
       if (window.showHud) window.showHud();
       if (window.SceneScroll) window.SceneScroll.refresh();
+      // Start the ambient background loop after the gate fully opens.
+      // _startAmbient() has built-in autoplay-retry on the next user gesture
+      // if the browser blocks this (common in Chrome/Safari setTimeout context).
+      if (window.AudioFX) AudioFX.play("ambient-loop");
     }, 500);
   }
 

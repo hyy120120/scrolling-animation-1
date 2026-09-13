@@ -1,12 +1,22 @@
 /**
  * app.js
  * Entry point. The individual modules (scrollEngine, hudController,
- * gestureGate, holdButton) self-initialize via IIFEs on script load,
- * so this file is intentionally minimal — it exists as the single
- * place to add future cross-module wiring (e.g. audio cues, act
- * transition hooks) as the site grows past this skeleton.
+ * gestureGate, holdButton, audioEngine) self-initialize via IIFEs on
+ * script load, so this file is the single place for cross-module wiring.
  */
 (function () {
   "use strict";
-  console.log("Skeleton loaded — Act 0 (gate) and Act 1 (hold-to-continue) are wired up.");
+
+  /** Wire the HUD mute button to AudioFX.toggleMute(). */
+  const muteBtn = document.getElementById("hud-mute");
+  if (muteBtn && window.AudioFX) {
+    muteBtn.addEventListener("click", () => {
+      const muted = AudioFX.toggleMute();
+      muteBtn.textContent  = muted ? "🔇" : "🔊";
+      muteBtn.setAttribute("aria-label", muted ? "Unmute sound" : "Mute sound");
+    });
+  }
+
+  console.log("RKAZN — all modules loaded.");
 })();
+

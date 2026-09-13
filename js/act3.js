@@ -1,6 +1,6 @@
 /**
  * act3.js
- * Drives the Act 3 ("Introducing [BRAND NAME]") headline-stage crossfade system.
+ * Drives the Act 3 ("Introducing RKAZN") headline-stage crossfade system.
  *
  * Reads the `acts` array from the "scene:progress" CustomEvent dispatched
  * by scrollEngine.js (no second scroll listener), finds the entry with

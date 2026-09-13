@@ -43,6 +43,9 @@
         <span class="hud-xp-star">✦</span>
         <span id="hud-xp-count">0 XP</span>
       </div>
+      <!-- Mute toggle — wired to AudioFX.toggleMute() in audioEngine.js -->
+      <button class="hud-mute" id="hud-mute" type="button"
+              aria-label="Toggle sound" title="Toggle sound">🔊</button>
       <button class="hud-cta" type="button">Book Free Call</button>
       <button class="hud-menu" type="button" aria-label="Menu">
         <span></span><span></span>
@@ -311,6 +314,7 @@
 
   </main>
 
+  <script src="js/audioEngine.js"></script>
   <script src="js/scrollEngine.js"></script>
   <script src="js/hudController.js"></script>
   <script src="js/gestureGate.js"></script>
