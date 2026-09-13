@@ -258,10 +258,19 @@ body.is-locked { overflow: hidden; height: 100vh; }
 .act-bg {
   position: absolute;
   inset: 0;
+  /* Fallback gradient: visible instantly, before the image loads. */
   background: linear-gradient(180deg, var(--navy-mid), var(--navy-deep));
   /* overflow:hidden clips the ::before aurora blob (which extends -20%
      past edges) without affecting position:sticky on ancestor elements. */
   overflow: hidden;
+}
+
+/* Act 1 illustration — base layer, behind aurora + grain + vignette */
+#act-1-bg {
+  background-image: url('assets/images/act1-bg.jpg'),
+                    linear-gradient(180deg, var(--navy-mid), var(--navy-deep));
+  background-size: cover, cover;
+  background-position: center, center;
 }
 
 .act-content {
@@ -345,12 +354,11 @@ body.is-locked { overflow: hidden; height: 100vh; }
 
 /* Act 2 design tokens (local only — do not pollute :root) */
 .act-2-bg {
-  background: linear-gradient(
-    160deg,
-    #0a0f14 0%,
-    #0d1720 55%,
-    #110a0a 100%   /* very dark maroon tint at the bottom edge */
-  );
+  /* Illustration is the primary layer; gradient-only fallback for slow connections. */
+  background-image: url('assets/images/act2-bg.jpg'),
+                    linear-gradient(160deg, #0a0f14 0%, #0d1720 55%, #110a0a 100%);
+  background-size: cover, cover;
+  background-position: center, center;
 }
 
 /* Hairline warning-red glow across the top of the pinned panel */
@@ -576,15 +584,19 @@ body.is-locked { overflow: hidden; height: 100vh; }
    Act 2's dark gut-punch without being a jarring reset.
    ============================================================ */
 
-/* Background: navy-mid as base, large brass radial glow centred behind text */
+/* Background: illustration base + existing brass radial glow as css overlay mood-layer */
 .act-3-bg {
-  background:
+  background-image:
+    /* Soft brass radial glow composited over the illustration for the warm reveal mood */
     radial-gradient(
       ellipse 70% 55% at 50% 45%,
-      rgba(199, 154, 75, 0.12) 0%,
+      rgba(199, 154, 75, 0.10) 0%,
       transparent 70%
     ),
+    url('assets/images/act3-bg.jpg'),
     linear-gradient(175deg, var(--navy-mid) 0%, var(--navy-deep) 100%);
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
 }
 
 /* Content container — same relative + height pattern as Act 2 */
@@ -775,20 +787,23 @@ body.is-locked { overflow: hidden; height: 100vh; }
 #act-4 { --a4-glow-intensity: 0.18; }
 
 /*
-   TODO: replace radial glow with UK/Ireland skyline illustration or PNG sequence.
-   When the real asset arrives, replace the radial-gradient below with an <img>
-   or a CSS background-image pointing at the asset. Keep .act-4-bg as the layer.
+   Act 4 illustration: the TODO skyline asset is now fulfilled by the generated image.
+   The JS-driven --a4-glow-intensity radial gradient is kept as an overlay on top
+   so the glow still intensifies with scroll, composited over the illustration.
 */
 .act-4-bg {
-  background:
+  background-image:
+    /* Dynamic JS glow overlay (--a4-glow-intensity written by act4.js each frame) */
     radial-gradient(
       ellipse 90% 70% at 50% 60%,
-      /* opacity of the glow scales with --a4-glow-intensity via calc() */
       rgba(199, 154, 75, calc(var(--a4-glow-intensity) * 0.55)) 0%,
       rgba(199, 154, 75, calc(var(--a4-glow-intensity) * 0.12)) 45%,
       transparent 75%
     ),
-    var(--navy-deep);
+    url('assets/images/act4-bg.jpg'),
+    linear-gradient(180deg, var(--navy-mid), var(--navy-deep));
+  background-size: cover, cover, cover;
+  background-position: center, center, center;
   /* smooth colour transition as JS updates the custom property */
   transition: background 0.4s ease;
 }
@@ -1296,43 +1311,44 @@ body.is-locked { overflow: hidden; height: 100vh; }
 }
 
 /* ── Base aurora blob (Acts 1 + 3 default: brass/parchment palette) ── */
+/* Alpha values reduced ~60% now that illustration images supply the main visual.
+   Aurora reads as a subtle atmospheric enhancement, not the primary background. */
 .act-bg::before {
   content: "";
   position: absolute;
   inset: -20%;
   background:
-    radial-gradient(circle at 20% 30%, rgba(199, 154, 75, 0.20), transparent 45%),
-    radial-gradient(circle at 80% 20%, rgba(224, 181, 99, 0.14), transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(243, 237, 224, 0.08), transparent 50%);
+    radial-gradient(circle at 20% 30%, rgba(199, 154, 75, 0.12), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(224, 181, 99, 0.08), transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(243, 237, 224, 0.05), transparent 50%);
   filter: blur(60px);
   animation: aurora-drift 18s ease-in-out infinite alternate;
   pointer-events: none;
-  /* GPU-promote so the blur+animation never janks the main thread. */
   will-change: transform;
 }
 
-/* ── Act 2 override: dark/tense warning-red aurora ── */
+/* ── Act 2 override: dark/tense warning-red aurora (reduced for illustration) ── */
 .act-2-bg::before {
   background:
-    radial-gradient(circle at 22% 28%, rgba(200, 40,  40, 0.18), transparent 44%),
-    radial-gradient(circle at 78% 18%, rgba(160, 20,  20, 0.12), transparent 40%),
-    radial-gradient(circle at 55% 78%, rgba(120, 10,  10, 0.08), transparent 48%);
+    radial-gradient(circle at 22% 28%, rgba(200, 40,  40, 0.11), transparent 44%),
+    radial-gradient(circle at 78% 18%, rgba(160, 20,  20, 0.07), transparent 40%),
+    radial-gradient(circle at 55% 78%, rgba(120, 10,  10, 0.05), transparent 48%);
 }
 
-/* ── Act 3 override: warmer, brighter brass — signals the positive turn ── */
+/* ── Act 3 override: warmer brass — reduced for illustration ── */
 .act-3-bg::before {
   background:
-    radial-gradient(circle at 25% 32%, rgba(199, 154, 75, 0.22), transparent 48%),
-    radial-gradient(circle at 75% 18%, rgba(224, 181, 99, 0.16), transparent 42%),
-    radial-gradient(circle at 48% 76%, rgba(243, 237, 224, 0.10), transparent 52%);
+    radial-gradient(circle at 25% 32%, rgba(199, 154, 75, 0.13), transparent 48%),
+    radial-gradient(circle at 75% 18%, rgba(224, 181, 99, 0.10), transparent 42%),
+    radial-gradient(circle at 48% 76%, rgba(243, 237, 224, 0.06), transparent 52%);
 }
 
-/* ── Act 4 override: very restrained — act4.js JS glow stays dominant ── */
+/* ── Act 4 override: minimal aurora — JS glow + illustration handle everything ── */
 .act-4-bg::before {
   background:
-    radial-gradient(circle at 30% 25%, rgba(199, 154, 75, 0.10), transparent 42%),
-    radial-gradient(circle at 70% 22%, rgba(224, 181, 99, 0.07), transparent 38%),
-    radial-gradient(circle at 50% 75%, rgba(243, 237, 224, 0.04), transparent 46%);
+    radial-gradient(circle at 30% 25%, rgba(199, 154, 75, 0.06), transparent 42%),
+    radial-gradient(circle at 70% 22%, rgba(224, 181, 99, 0.04), transparent 38%),
+    radial-gradient(circle at 50% 75%, rgba(243, 237, 224, 0.02), transparent 46%);
 }
 
 /* ── Noise grain overlay (shared by all acts) ── */
