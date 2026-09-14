@@ -263,6 +263,10 @@ body.is-locked { overflow: hidden; height: 100vh; }
   /* overflow:hidden clips the ::before aurora blob (which extends -20%
      past edges) without affecting position:sticky on ancestor elements. */
   overflow: hidden;
+  /* GPU layer promotion + micro-transition so parallax.js transforms
+     are composited off the main thread and don't produce per-frame jank. */
+  will-change: transform;
+  transition: transform 0.05s linear;
 }
 
 /* Act 1 illustration — base layer, behind aurora + grain + vignette */
@@ -1455,3 +1459,210 @@ body.is-locked { overflow: hidden; height: 100vh; }
   animation: swash-draw 1.5s ease-out 0.4s forwards;
 }
 
+/* ============================================================
+   ACT 1 — "You Believed"
+   Stage crossfade system (same mechanism as Act 2/3/4), plus
+   game-badge VISA stamp and cracked/wobbling GUARANTEE text.
+   ============================================================ */
+
+/* Content container: relative + fixed height so absolute stages stack */
+.act-1-content {
+  position: relative;
+  max-width: 780px;
+  width: 100%;
+  height: min(70vh, 600px);
+}
+
+/* ---- Stage crossfade (identical to .a2-stage / .a3-stage) ---- */
+.a1-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 28px;
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  pointer-events: none;
+}
+
+.a1-stage.is-active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Stage 0 flourish fires when the stage becomes active */
+#a1-stage-0.is-active .flourish-swash path {
+  animation: swash-draw 1.4s ease-out 0.3s forwards;
+}
+
+/* ---- Stage text typography ---- */
+.a1-text {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.2;
+  text-align: center;
+  margin: 0;
+  color: var(--parchment);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Stages 1 & 2: slightly smaller so the building phrase feels like a reveal */
+.a1-text--mid {
+  font-size: clamp(1.6rem, 4.2vw, 2.8rem);
+  color: rgba(243, 237, 224, 0.85);
+}
+
+/* ---- Stage 3: VISA badge ---- */
+.a1-badge-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.a1-badge {
+  display: inline-block;
+  /* driven by animation below when stage is active */
+  transform: scale(0);
+  transition: none;
+}
+
+@keyframes badge-pop {
+  0%   { transform: scale(0)    rotate(-6deg); }
+  60%  { transform: scale(1.15) rotate(2deg);  }
+  80%  { transform: scale(0.95) rotate(-1deg); }
+  100% { transform: scale(1)    rotate(0deg);  }
+}
+
+/* Juicy cubic-bezier spring: cubic-bezier(0.68, -0.55, 0.27, 1.55) */
+#a1-stage-3.is-active .a1-badge {
+  animation: badge-pop 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) 0.1s both;
+}
+
+.a1-badge-svg {
+  width: clamp(200px, 40vw, 320px);
+  height: auto;
+  /* Flat mobile-game sticker feel: ink drop only, no realistic shadow */
+  filter: drop-shadow(0 4px 0 rgba(16, 32, 44, 0.55));
+  display: block;
+}
+
+/* ---- Stage 4: JOB GUARANTEE? ---- */
+.a1-cta-phrase {
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  line-height: 1.15;
+  text-align: center;
+  margin: 0 0 40px;
+  color: var(--parchment);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.2em;
+}
+
+.a1-job {
+  letter-spacing: 0.08em;
+}
+
+/* GUARANTEE crack container: two copies of the word clipped to top/bottom
+   halves with a jagged diagonal split, slightly offset apart */
+.a1-guarantee-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.a1-guarantee-top,
+.a1-guarantee-bot {
+  display: block;
+  font-family: var(--font-ui);
+  font-weight: 800;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  color: #d63c3c; /* warning-red — the crack "wound" tint */
+}
+
+/* Top half: clipped to everything ABOVE the jagged crack line */
+.a1-guarantee-top {
+  clip-path: polygon(
+    0%   0%,
+    100% 0%,
+    100% 44%,
+    78%  52%,
+    55%  44%,
+    32%  54%,
+    10%  46%,
+    0%   52%
+  );
+  transform: translateY(-3px) translateX(-1px);
+}
+
+/* Bottom half: clipped to everything BELOW the same crack line */
+.a1-guarantee-bot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  clip-path: polygon(
+    0%   52%,
+    10%  46%,
+    32%  54%,
+    55%  44%,
+    78%  52%,
+    100% 44%,
+    100% 100%,
+    0%   100%
+  );
+  transform: translateY(3px) translateX(1px);
+}
+
+/* Wobbling question mark — continuous ±4 deg oscillation */
+@keyframes qmark-wobble {
+  0%   { transform: rotate(0deg);  }
+  20%  { transform: rotate(4deg);  }
+  40%  { transform: rotate(-4deg); }
+  60%  { transform: rotate(3deg);  }
+  80%  { transform: rotate(-3deg); }
+  100% { transform: rotate(0deg);  }
+}
+
+.a1-qmark {
+  display: inline-block;
+  color: rgba(243, 237, 224, 0.9);
+}
+
+/* Only wobble while stage 4 is active */
+#a1-stage-4.is-active .a1-qmark {
+  animation: qmark-wobble 0.4s ease-in-out infinite;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 640px) {
+  .act-1-content {
+    height: min(82vh, 660px);
+  }
+
+  .a1-text {
+    font-size: clamp(1.8rem, 7.5vw, 2.8rem);
+  }
+
+  .a1-text--mid {
+    font-size: clamp(1.3rem, 5.5vw, 2rem);
+  }
+
+  .a1-cta-phrase {
+    font-size: clamp(1.4rem, 6.5vw, 2.2rem);
+    gap: 0.15em;
+  }
+
+  .a1-badge-svg {
+    width: clamp(160px, 72vw, 260px);
+  }
+}

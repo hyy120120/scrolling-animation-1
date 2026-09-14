@@ -56,29 +56,95 @@
   <!-- ============ SCROLL SCENE ============ -->
   <main id="scene" class="scene">
 
-    <!-- Act 1 — pinned -->
+    <!-- ============ Act 1 — You Believed ============ -->
     <section class="act" id="act-1" data-act="1">
       <div class="act-pin">
         <div class="act-bg" id="act-1-bg"></div>
-        <div class="act-content">
-          <h1 class="act-headline">
-            You <span class="script flourish-wrap">Believed
-              <svg class="flourish-swash" viewBox="0 0 220 40" preserveAspectRatio="none" aria-hidden="true">
-                <path d="M4 26 C 40 8, 90 8, 110 22 S 190 34, 216 12" />
-              </svg>
-            </span><br />
-            a UK degree was just <span class="script">about the money.</span>
-          </h1>
 
-          <div class="hold-wrap">
-            <button class="hold-btn" id="hold-1" type="button">
-              <svg class="hold-ring" width="104" height="104" viewBox="0 0 104 104">
-                <circle class="hold-ring-bg" cx="52" cy="52" r="46" />
-                <circle class="hold-ring-fill" id="hold-1-fill" cx="52" cy="52" r="46" />
-              </svg>
-              <span class="hold-label">HOLD<br />TO CONTINUE</span>
-            </button>
+        <div class="act-content act-1-content">
+
+          <!-- Stage 0 (progress 0.00–0.20): "You Believed" -->
+          <div class="a1-stage" id="a1-stage-0" aria-hidden="true">
+            <p class="a1-text">
+              You
+              <span class="script flourish-wrap">Believed
+                <svg class="flourish-swash" viewBox="0 0 220 40" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M4 26 C 40 8, 90 8, 110 22 S 190 34, 216 12" />
+                </svg>
+              </span>
+            </p>
           </div>
+
+          <!-- Stage 1 (progress 0.20–0.33): "Many study abroad consultancies" -->
+          <div class="a1-stage" id="a1-stage-1" aria-hidden="true">
+            <p class="a1-text a1-text--mid">
+              Many study abroad
+              <span class="script">consultancies</span>
+            </p>
+          </div>
+
+          <!-- Stage 2 (progress 0.33–0.53): "would sell You" -->
+          <div class="a1-stage" id="a1-stage-2" aria-hidden="true">
+            <p class="a1-text">
+              would
+              <span class="script">sell</span>
+              You
+            </p>
+          </div>
+
+          <!-- Stage 3 (progress 0.53–0.80): VISA badge pops in -->
+          <div class="a1-stage" id="a1-stage-3" aria-hidden="true">
+            <div class="a1-badge-wrap">
+              <!-- Flat game-sticker badge: rounded-square stamp, brass-gold, thick dark outline -->
+              <div class="a1-badge a1-badge--visa" role="img" aria-label="VISA stamp badge">
+                <svg class="a1-badge-svg" viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <!-- Outer stamp body -->
+                  <rect x="4" y="4" width="152" height="92" rx="18" ry="18"
+                        fill="var(--brass-bright)" stroke="var(--ink)" stroke-width="5" />
+                  <!-- Serrated stamp edge (top/bottom dots) -->
+                  <rect x="4" y="4" width="152" height="92" rx="18" ry="18"
+                        fill="none" stroke="var(--ink)" stroke-width="2.5"
+                        stroke-dasharray="6 5" stroke-dashoffset="3" opacity="0.35" />
+                  <!-- Inner inset border -->
+                  <rect x="12" y="12" width="136" height="76" rx="12" ry="12"
+                        fill="none" stroke="var(--ink)" stroke-width="2.5" opacity="0.5" />
+                  <!-- VISA text -->
+                  <text x="80" y="64"
+                        text-anchor="middle"
+                        font-family="Inter, sans-serif"
+                        font-weight="800"
+                        font-size="46"
+                        letter-spacing="4"
+                        fill="var(--ink)">VISA</text>
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stage 4 (progress 0.80–1.00): JOB GUARANTEE? + hold button -->
+          <div class="a1-stage" id="a1-stage-4" aria-hidden="true">
+            <p class="a1-cta-phrase">
+              <span class="a1-job">JOB</span>
+              <!-- "GUARANTEE" split into two halves with a jagged clip-path crack -->
+              <span class="a1-guarantee-wrap" aria-label="GUARANTEE">
+                <span class="a1-guarantee-top" aria-hidden="true">GUARANTEE</span>
+                <span class="a1-guarantee-bot" aria-hidden="true">GUARANTEE</span>
+              </span>
+              <!-- Wobbling question mark -->
+              <span class="a1-qmark" aria-hidden="true">?</span>
+            </p>
+
+            <div class="hold-wrap">
+              <button class="hold-btn" id="hold-1" type="button">
+                <svg class="hold-ring" width="104" height="104" viewBox="0 0 104 104">
+                  <circle class="hold-ring-bg" cx="52" cy="52" r="46" />
+                  <circle class="hold-ring-fill" id="hold-1-fill" cx="52" cy="52" r="46" />
+                </svg>
+                <span class="hold-label">HOLD<br />TO CONTINUE</span>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -332,9 +398,11 @@
 
   <script src="js/audioEngine.js"></script>
   <script src="js/scrollEngine.js"></script>
+  <script src="js/parallax.js"></script>
   <script src="js/hudController.js"></script>
   <script src="js/gestureGate.js"></script>
   <script src="js/holdButton.js"></script>
+  <script src="js/act1.js"></script>
   <script src="js/act2.js"></script>
   <script src="js/act3.js"></script>
   <script src="js/act4.js"></script>
